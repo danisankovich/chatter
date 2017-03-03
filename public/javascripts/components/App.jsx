@@ -17,10 +17,13 @@ class App extends Component {
     }
   }
   componentDidMount() {
-    // console.log(this.state)
-    // this.setState({
-    //   currentUser,
-    // })
+    const localUser = utils.getUser();
+    console.log(localUser)
+    if (localUser) {
+      this.setState({
+        currentUser: localUser,
+      });
+    }
   }
   addGroup(groupName) {
     const { groups } = this.state;
@@ -34,6 +37,7 @@ class App extends Component {
     const { users } = this.state;
     const currentUser = { id: users.length, name: userName }
     users.push(currentUser);
+    localStorage.setItem('chatteruser', JSON.stringify(currentUser));
     this.setState({ users, currentUser });
   }
   addMessage(newMessage) {

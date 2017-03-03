@@ -1,3 +1,3 @@
 module.exports = {
-  getUser: () => 'bigtimeguy',
+  getUser: () => JSON.parse(localStorage.getItem('chatteruser')),
 }
