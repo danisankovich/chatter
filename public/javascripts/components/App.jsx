@@ -1,8 +1,4 @@
 import React, {Component, PropTypes} from 'react';
-import GroupSection from './groups/GroupSection.jsx';
-import UserSection from './users/UserSection.jsx';
-import MessageSection from './messages/MessageSection.jsx';
-import UserForm from './users/UserForm.jsx';
 
 const iosocket = io.connect()
 
@@ -10,6 +6,12 @@ import utils from '../utils';
 import $ from 'jquery';
 import fecha from 'fecha';
 import { uniqBy } from 'lodash';
+
+import GroupSection from './groups/GroupSection.jsx';
+import UserSection from './users/UserSection.jsx';
+import MessageSection from './messages/MessageSection.jsx';
+import UserForm from './users/UserForm.jsx';
+
 
 class App extends Component {
   constructor(props) {
@@ -21,7 +23,39 @@ class App extends Component {
       activeGroup: {},
     }
   }
+
   componentDidMount() {
+
+    this.getCurrentuser();
+    this.getGroupList();
+
+    iosocket.on('connect', () => {
+      iosocket.on('message', (data) => {
+        if (this.state.activeGroup && data.activeGroup._id === this.state.activeGroup._id) {
+          this.state.messages.push(data.messageObject);
+          this.setState({messages: this.state.messages})
+        }
+      });
+      iosocket.on('enter', (list) => {
+        const users = _.map(list, user => user);
+
+        if (this.state.currentUser) {
+          const currentUserAdded = users.find((user) => {
+            return user.username === this.state.currentUser.username;
+          });
+          if (!currentUserAdded) users.push(this.state.currentUser);
+        }
+        this.setState({ users: uniqBy(users, 'id') })
+      })
+      iosocket.on('newgroup', () => {
+        this.getGroupList();
+      })
+      iosocket.on('disconnect', () => {
+        console.log('disconnected')
+      });
+    });
+  }
+  getCurrentuser() {
     const token = localStorage.getItem('chatteruser')
     $.ajax({
        url: '/api/',
@@ -34,6 +68,8 @@ class App extends Component {
     }).fail((err) => {
       console.log('error', err)
     });
+  }
+  getGroupList() {
     $.ajax({
        url: 'group/api/',
        type: "GET",
@@ -42,33 +78,7 @@ class App extends Component {
     }).fail((err) => {
       console.log('error', err)
     });
-    iosocket.on('connect', () => {
-      iosocket.on('message', (data) => {
-        if (this.state.activeGroup && data.activeGroup._id === this.state.activeGroup._id) {
-          this.state.messages.push(data.messageObject);
-          this.setState({messages: this.state.messages})
-        }
-      });
-      iosocket.on('enter', (list) => {
-        const users = _.map(list, user => user);
-        this.setState({ users: uniqBy(users, 'id') })
-      })
-      iosocket.on('newgroup', () => {
-        $.ajax({
-           url: 'group/api/',
-           type: "GET",
-        }).done((groups) => {
-          this.setState({ groups });
-        }).fail((err) => {
-          console.log('error', err)
-        });
-      })
-      iosocket.on('disconnect', () => {
-        console.log('disconnected')
-      });
-    });
   }
-
   addGroup(group) {
     const { groups } = this.state;
     groups.push({ _id: group.id, name: group.name });
@@ -81,7 +91,7 @@ class App extends Component {
        type: "GET",
     }).done((group) => {
       this.setState({ activeGroup: group, messages: group.messages });
-      iosocket.emit('enterChatRoom', {activeGroup, user: this.state.currentUser})
+      // iosocket.emit('enterChatRoom', {activeGroup, user: this.state.currentUser})
     }).fail((err) => {
       console.log('error', err)
     });
@@ -90,8 +100,10 @@ class App extends Component {
     const { users } = this.state;
     const currentUser = { id: user._id, username: user.username }
     users.push(currentUser)
+    console.log(currentUser)
     iosocket.emit('enter', currentUser);
     this.setState({ currentUser, users: uniqBy(users, 'id') });
+    console.log(this.state.users,'kkkkkkk')
   }
   addMessage(newMessage, activeGroup) {
     const { messages, users } = this.state;

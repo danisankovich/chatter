@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
+
 import {invalidPasswordCheck} from '../../../utils';
+
 class Signup extends Component {
   handleFormSubmit(e) { //called with props from submit form
     e.preventDefault();

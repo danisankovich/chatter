@@ -41,6 +41,7 @@ socketio.listen(server).on('connection', (socket) => {
       userTracker[user.id] = user;
     }
     socket.broadcast.emit('enter', userTracker);
+    socket.emit('enter', userTracker);
   })
   socket.emit('enter', userTracker)
 });

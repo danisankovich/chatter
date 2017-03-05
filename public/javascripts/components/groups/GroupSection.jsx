@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+
 import GroupForm from './GroupForm.jsx';
 import GroupCollection from './GroupCollection.jsx';
 
