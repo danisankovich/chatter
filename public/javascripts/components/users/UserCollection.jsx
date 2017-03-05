@@ -1,6 +1,5 @@
 import React, {Component, PropTypes} from 'react';
 import User from './User.jsx';
-import { uniqBy, uniq } from 'lodash';
 
 class UserCollection extends Component {
 

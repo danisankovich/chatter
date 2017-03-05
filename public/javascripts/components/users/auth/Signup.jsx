@@ -5,8 +5,29 @@ class Signup extends Component {
   handleFormSubmit(e) { //called with props from submit form
     e.preventDefault();
     const { email, username, password, passwordConfirm } = this.state;
+    if (password.length < 3) {
+      this.renderAlert('PASSWORD_LENGTH');
+      return;
+    }
+    if (!password.match(/[a-z]/g)) {
+      this.renderAlert('NO_LOWER_CASE');
+      return;
+    };
+    if (!password.match(/[A-Z]/g)) {
+      this.renderAlert('NO_UPPER_CASE');
+      return;
+    }
+    if (!password.match(/[0-9]/g)) {
+      this.renderAlert('NO_NUMBERS');
+      return;
+    }
+
     if (password !== passwordConfirm) {
-      this.renderAlert();
+      this.renderAlert('PASSWORDS_DONT_MATCH');
+      return;
+    }
+    if (email.split('@').length !== 2) {
+      this.renderAlert('INVALID_EMAIL')
       return;
     }
     $.ajax({
@@ -25,8 +46,13 @@ class Signup extends Component {
     this.props.setUserName(user);
   }
 
-  renderAlert() {
-    alert('Passwords do not match')
+  renderAlert(errorType) {
+    if (errorType === 'NO_LOWER_CASE') alert('Password must contain at least 1 lower case letter');
+    if (errorType === 'NO_UPPER_CASE') alert('Password must contain at least 1 upper case letter');
+    if (errorType === 'NO_NUMBERS') alert('Password must contain at least 1 number');
+    if (errorType === 'PASSWORD_LENGTH') alert('Passwords must be at least 3 characters');
+    if (errorType === 'PASSWORDS_DONT_MATCH') alert('Passwords do not match');
+    if (errorType === 'INVALID_EMAIL') alert('Invalid Email');
   }
   onInputChange(type, e) {
     this.setState({[type]: e.target.value});
@@ -37,7 +63,7 @@ class Signup extends Component {
       <form onSubmit={this.handleFormSubmit.bind(this)}>
         <fieldset className="form-group">
           <label>Email: </label>
-          <input className="form-control" onChange={this.onInputChange.bind(this, 'email')} />
+          <input type='email' className="form-control" onChange={this.onInputChange.bind(this, 'email')} />
         </fieldset>
         <fieldset className="form-group">
           <label>Username: </label>

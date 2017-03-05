@@ -36,7 +36,7 @@ class Signin extends Component {
           <label>Password: </label>
           <input className="form-control" type="password" onChange={this.onInputChange.bind(this, 'password')} />
         </fieldset>
-        <button action="submit" className="btn btn-primary">Sign Up</button>
+        <button action="submit" className="btn btn-primary">Sign In</button>
       </form>
     );
   }

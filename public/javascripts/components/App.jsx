@@ -9,7 +9,7 @@ const iosocket = io.connect()
 import utils from '../utils';
 import $ from 'jquery';
 import fecha from 'fecha';
-import _ from 'lodash';
+import { uniqBy } from 'lodash';
 
 class App extends Component {
   constructor(props) {
@@ -51,7 +51,7 @@ class App extends Component {
       });
       iosocket.on('enter', (list) => {
         const users = _.map(list, user => user);
-        this.setState({ users })
+        this.setState({ users: uniqBy(users, 'id') })
       })
       iosocket.on('disconnect', () => {
         console.log('disconnected')
@@ -80,7 +80,7 @@ class App extends Component {
     const currentUser = { id: user._id, username: user.username }
     users.push(currentUser)
     iosocket.emit('enter', currentUser);
-    this.setState({ currentUser, users });
+    this.setState({ currentUser, users: uniqBy(users, 'id') });
   }
   addMessage(newMessage, activeGroup) {
     const { messages, users } = this.state;
