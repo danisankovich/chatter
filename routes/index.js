@@ -16,10 +16,7 @@ const authenticate = expressJwt({secret : config.secret});
 const User = require('../models/user');
 
 router.get('/api', requireAuth, Authentication.getUser);
-router.get('/api/user/:id', Authentication.getUserProfile);
 router.post('/api/signup', Authentication.signup);
 router.post('/api/signin', requireSignin, Authentication.signin);
-router.post('/api/editInfo', Authentication.editInfo);
-router.post('/api/uploadavatar', Authentication.uploadAvatar);
 
 module.exports = router;

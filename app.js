@@ -10,37 +10,54 @@ var routes = require('./routes/index');
 var group = require('./routes/group');
 var ejs = require('ejs')
 var http = require('http');
+var socketio = require('socket.io');
 var debug = require('debug')('chat:server');
 
 var app = express();
 
-
-
-/**
- * Get port from environment and store in Express.
- */
-
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
-/**
- * Create HTTP server.
- */
-
 var server = http.createServer(app);
 
-/**
- * Listen on provided port, on all network interfaces.
- */
-
 server.listen(port);
-var io = require('socket.io').listen(server);
 
 server.on('error', onError);
 server.on('listening', onListening);
-/**
- * Normalize a port into a number, string, or false.
- */
+
+const userTracker = [];
+
+socketio.listen(server).on('connection', (socket) => {
+  socket.on('message', (msg) => {
+    console.log('message received: ', msg);
+    socket.broadcast.emit('message', msg);
+  })
+  socket.on('userentered', (data) => {
+    if (data) {
+      const found = userTracker.find((user) => {
+        console.log(user, data)
+        return user._id === data._id;
+      })
+      console.log(found, 'found')
+      if (!found) {
+        userTracker.push(data);
+      }
+    }
+    console.log(userTracker)
+    socket.broadcast.emit('userentered', userTracker);
+  })
+  // socket.on('enterChatRoom', (data) => {
+  //   console.log('new user in chatroom: ', data);
+  //   socket.broadcast.emit('enterChatRoom', data);
+  // })
+  // socket.on('leaveChatRoom', (data) => {
+  //   console.log('new user in chatroom: ', data);
+  //   socket.broadcast.emit('leaveChatRoom', data);
+  // })
+  socket.on('updateChatRoom', (data) => {
+    socket.broadcast.emit('updateChatRoom', data);
+  })
+});
 
 function normalizePort(val) {
   var port = parseInt(val, 10);
@@ -57,10 +74,6 @@ function normalizePort(val) {
 
   return false;
 }
-
-/**
- * Event listener for HTTP server "error" event.
- */
 
 function onError(error) {
   if (error.syscall !== 'listen') {
@@ -85,10 +98,6 @@ function onError(error) {
       throw error;
   }
 }
-
-/**
- * Event listener for HTTP server "listening" event.
- */
 
 function onListening() {
   var addr = server.address();
@@ -169,16 +178,16 @@ app.use(function(err, req, res, next) {
   });
 });
 
-io.on('connection', function(socket){
-  console.log('A USER HAS CONNECTED');
-  socket.emit('info', { msg: 'YOU HAVE DONE IT'});
-  socket.on('newgroup:client', (data) => {
-    socket.emit('newgroup:server', data);
-  })
-});
+// io.on('connection', function(socket){
+//   console.log('A USER HAS CONNECTED');
+//   socket.emit('info', { msg: 'YOU HAVE DONE IT'});
+//   socket.on('newgroup:client', (data) => {
+//     socket.emit('newgroup:server', data);
+//   })
+// });
 
 
 
-io.emit('chat message', 'yo dude')
+// io.emit('chat message', 'yo dude')
 
 module.exports = app;

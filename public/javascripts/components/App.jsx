@@ -4,6 +4,8 @@ import UserSection from './users/UserSection.jsx';
 import MessageSection from './messages/MessageSection.jsx';
 import UserForm from './users/UserForm.jsx';
 
+const iosocket = io.connect()
+
 import utils from '../utils';
 import $ from 'jquery';
 import fecha from 'fecha';
@@ -39,6 +41,45 @@ class App extends Component {
     }).fail((err) => {
       console.log('error', err)
     });
+    iosocket.on('connect', () => {
+      console.log('connected');
+      iosocket.emit('userentered', this.state.currentUser);
+      console.log(this.state.currentUser)
+      iosocket.on('userentered', (data) => {
+        this.setState({users: data})
+      });
+      // const found = this.state.users.find((user) => {
+      //   return user._id === this.state.currentUser._id;
+      // })
+      // if (!found) {
+      //   console.log('new user in room');
+      //   this.state.users.push()
+      // }
+      iosocket.on('message', (data) => {
+        if (this.state.activeGroup && data.activeGroup._id === this.state.activeGroup._id) {
+          this.state.messages.push(data.messageObject);
+          this.setState({messages: this.state.messages})
+        }
+      });
+      // iosocket.on('enterChatRoom', (data) => {
+      //   console.log(data);
+      //   if (this.state.activeGroup && data.activeGroup._id === this.state.activeGroup._id) {
+      //     this.state.users.push(data.user);
+      //     this.setState({users: this.state.users})
+      //     iosocket.emit('updateChatRoom', {users: this.state.users, activeGroup: data.activeGroup});
+      //   }
+      // });
+      // iosocket.on('updateChatRoom', (data) => {
+      //   console.log(this.state);
+      //   if (data.activeGroup._id !== this.state.activeGroup._id) {
+      //     console.log(this.state.users);
+      //   }
+      //   this.setState({users: data.users})
+      // });
+      iosocket.on('disconnect', () => {
+        console.log('disconnected')
+      });
+    });
   }
 
   addGroup(group) {
@@ -52,6 +93,7 @@ class App extends Component {
        type: "GET",
     }).done((group) => {
       this.setState({ activeGroup: group, messages: group.messages });
+      iosocket.emit('enterChatRoom', {activeGroup, user: this.state.currentUser})
     }).fail((err) => {
       console.log('error', err)
     });
@@ -77,6 +119,7 @@ class App extends Component {
     }).fail((err) => {
       console.log('error', err)
     });
+    iosocket.emit('message', {messageObject, activeGroup})
   }
   render() {
     const { group } = this.props
