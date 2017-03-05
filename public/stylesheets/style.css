@@ -9,9 +9,15 @@ a {
 
 .message {
   margin-top: 10px;
-  background-color: lightgrey;
   padding: 5px 5px 5px 10px;
   border-radius: 10px;
+}
+
+.theirs {
+  background-color: lightgrey;
+}
+.mine {
+  background-color: lightblue;
 }
 
 .app{
@@ -27,9 +33,15 @@ a {
 
 .messages-container{
   flex-basis: 80%;
-  margin-bottom: 0;
+  /*margin-bottom: 0;*/
   height: 100vh;
 }
+
+.messages {
+  top: 20px;
+  height: 90%;
+}
+
 .support, .users{
   height: 50vh;
   margin-bottom: 0;
@@ -42,9 +54,25 @@ a {
 .groups, .users{
   height: 88%;
 }
-.messages{
-  height: 94%;
+
+.signout-button {
+  right: 65px;
+  top: 50px;
+  position: absolute;
+  height: 40px;
 }
+
+.messages{
+  height: 85%;
+  top: 0;
+}
+
+.message-form {
+  position: absolute;
+  bottom: -30px;
+  width: 68%;
+}
+
 .groups > ul, .messages > ul, .users > ul{
   flex: 1;
   overflow-y: auto;

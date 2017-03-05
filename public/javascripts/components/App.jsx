@@ -50,6 +50,10 @@ class App extends Component {
       iosocket.on('newgroup', () => {
         this.getGroupList();
       })
+      iosocket.on('userleft', (list) => {
+        const users = _.map(list, user => user);
+        this.setState({ users: uniqBy(users, 'id') })
+      });
       iosocket.on('disconnect', () => {
         console.log('disconnected')
       });
@@ -91,7 +95,6 @@ class App extends Component {
        type: "GET",
     }).done((group) => {
       this.setState({ activeGroup: group, messages: group.messages });
-      // iosocket.emit('enterChatRoom', {activeGroup, user: this.state.currentUser})
     }).fail((err) => {
       console.log('error', err)
     });
@@ -122,6 +125,11 @@ class App extends Component {
     });
     iosocket.emit('message', {messageObject, activeGroup})
   }
+  signOut() {
+    localStorage.clear('chatteruser');
+    iosocket.emit('userleft', this.state.currentUser);
+    this.setState({currentUser: null});
+  }
   render() {
     const { group } = this.props
     return (
@@ -141,6 +149,8 @@ class App extends Component {
             </div>
             <MessageSection
               {...this.state}
+              signOut={this.signOut.bind(this)}
+
               addMessage={this.addMessage.bind(this)}
             />
         </div>

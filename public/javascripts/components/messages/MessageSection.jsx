@@ -9,10 +9,18 @@ class MessageSection extends Component {
 
     return (
       <div className="messages-container panel panel-default">
-        <div className="panel-heading"><strong>{activeGroup.name}</strong></div>
+        <div className="panel-heading">
+          <strong>
+            {activeGroup.name ? activeGroup.name : 'Select A Group From The Left'}
+          </strong>
+        </div>
         <div className="panel-body messages">
-          <MessageCollection {...this.props} />
-          <MessageForm {...this.props} />
+          <div className='scroll-groups'>
+            <MessageCollection {...this.props} />
+            <div className='message-form'>
+              <MessageForm {...this.props} />
+            </div>
+          </div>
         </div>
       </div>
     )

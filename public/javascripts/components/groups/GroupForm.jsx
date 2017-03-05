@@ -31,6 +31,7 @@ class GroupForm extends Component {
             type="text"
             ref="group"
             name=""
+            placeholder="Create A New Group"
           />
         </div>
       </form>

@@ -8,7 +8,9 @@ class UserSection extends Component {
     return (
       <div className="support panel panel-primary">
         <div className="panel-heading">
-          <strong>Users</strong>
+          <div>
+            <strong>Users</strong>
+          </div>
         </div>
 
         <div className="panel-body users">

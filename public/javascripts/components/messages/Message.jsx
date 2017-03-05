@@ -3,10 +3,10 @@ import React, {Component, PropTypes} from 'react';
 class Message extends Component {
 
   render() {
-    const { message } = this.props;
-
+    const { message, currentUser } = this.props;
+    const messageClass = currentUser.username === message.author.username ? 'message mine' : 'message theirs';
     return (
-      <li className="message">
+      <li className={messageClass}>
         <div className='author'>
           <strong>{message.author.username}</strong>
           <i className='timestamp'>{message.createdAt}</i>

@@ -43,6 +43,12 @@ socketio.listen(server).on('connection', (socket) => {
     socket.broadcast.emit('enter', userTracker);
     socket.emit('enter', userTracker);
   })
+  socket.on('userleft', (user) => {
+    if (user && userTracker[user.id]) {
+      delete userTracker[user.id]
+    }
+    socket.broadcast.emit('userleft', userTracker);
+  })
   socket.emit('enter', userTracker)
 });
 
