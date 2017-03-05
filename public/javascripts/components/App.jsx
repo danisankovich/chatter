@@ -9,6 +9,7 @@ const iosocket = io.connect()
 import utils from '../utils';
 import $ from 'jquery';
 import fecha from 'fecha';
+import _ from 'lodash';
 
 class App extends Component {
   constructor(props) {
@@ -42,40 +43,16 @@ class App extends Component {
       console.log('error', err)
     });
     iosocket.on('connect', () => {
-      console.log('connected');
-      iosocket.emit('userentered', this.state.currentUser);
-      console.log(this.state.currentUser)
-      iosocket.on('userentered', (data) => {
-        this.setState({users: data})
-      });
-      // const found = this.state.users.find((user) => {
-      //   return user._id === this.state.currentUser._id;
-      // })
-      // if (!found) {
-      //   console.log('new user in room');
-      //   this.state.users.push()
-      // }
       iosocket.on('message', (data) => {
         if (this.state.activeGroup && data.activeGroup._id === this.state.activeGroup._id) {
           this.state.messages.push(data.messageObject);
           this.setState({messages: this.state.messages})
         }
       });
-      // iosocket.on('enterChatRoom', (data) => {
-      //   console.log(data);
-      //   if (this.state.activeGroup && data.activeGroup._id === this.state.activeGroup._id) {
-      //     this.state.users.push(data.user);
-      //     this.setState({users: this.state.users})
-      //     iosocket.emit('updateChatRoom', {users: this.state.users, activeGroup: data.activeGroup});
-      //   }
-      // });
-      // iosocket.on('updateChatRoom', (data) => {
-      //   console.log(this.state);
-      //   if (data.activeGroup._id !== this.state.activeGroup._id) {
-      //     console.log(this.state.users);
-      //   }
-      //   this.setState({users: data.users})
-      // });
+      iosocket.on('enter', (list) => {
+        const users = _.map(list, user => user);
+        this.setState({ users })
+      })
       iosocket.on('disconnect', () => {
         console.log('disconnected')
       });
@@ -101,8 +78,9 @@ class App extends Component {
   setUserName(user) {
     const { users } = this.state;
     const currentUser = { id: user._id, username: user.username }
-    users.push(currentUser);
-    this.setState({ users, currentUser });
+    users.push(currentUser)
+    iosocket.emit('enter', currentUser);
+    this.setState({ currentUser, users });
   }
   addMessage(newMessage, activeGroup) {
     const { messages, users } = this.state;

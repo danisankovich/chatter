@@ -13,6 +13,8 @@ var http = require('http');
 var socketio = require('socket.io');
 var debug = require('debug')('chat:server');
 
+const fs = require('fs');
+
 var app = express();
 
 var port = normalizePort(process.env.PORT || '3000');
@@ -25,38 +27,21 @@ server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
-const userTracker = [];
+const userTracker = {};
 
 socketio.listen(server).on('connection', (socket) => {
   socket.on('message', (msg) => {
     console.log('message received: ', msg);
     socket.broadcast.emit('message', msg);
-  })
-  socket.on('userentered', (data) => {
-    if (data) {
-      const found = userTracker.find((user) => {
-        console.log(user, data)
-        return user._id === data._id;
-      })
-      console.log(found, 'found')
-      if (!found) {
-        userTracker.push(data);
-      }
+  });
+  socket.on('enter', (user) => {
+    console.log(user, 'laks');
+    if (user && !userTracker[user.id]) {
+      userTracker[user.id] = user;
     }
-    console.log(userTracker)
-    socket.broadcast.emit('userentered', userTracker);
+    socket.broadcast.emit('enter', userTracker);
   })
-  // socket.on('enterChatRoom', (data) => {
-  //   console.log('new user in chatroom: ', data);
-  //   socket.broadcast.emit('enterChatRoom', data);
-  // })
-  // socket.on('leaveChatRoom', (data) => {
-  //   console.log('new user in chatroom: ', data);
-  //   socket.broadcast.emit('leaveChatRoom', data);
-  // })
-  socket.on('updateChatRoom', (data) => {
-    socket.broadcast.emit('updateChatRoom', data);
-  })
+  socket.emit('enter', userTracker)
 });
 
 function normalizePort(val) {
@@ -177,17 +162,5 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
-
-// io.on('connection', function(socket){
-//   console.log('A USER HAS CONNECTED');
-//   socket.emit('info', { msg: 'YOU HAVE DONE IT'});
-//   socket.on('newgroup:client', (data) => {
-//     socket.emit('newgroup:server', data);
-//   })
-// });
-
-
-
-// io.emit('chat message', 'yo dude')
 
 module.exports = app;

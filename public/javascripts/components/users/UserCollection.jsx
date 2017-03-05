@@ -1,13 +1,15 @@
 import React, {Component, PropTypes} from 'react';
 import User from './User.jsx';
+import { uniqBy, uniq } from 'lodash';
 
 class UserCollection extends Component {
 
   render() {
+    const {users} = this.props;
     return (
       <ul>
         {
-          this.props.users.map(user =>
+          users.map(user =>
             <User
               key={user.id}
               user={user}
