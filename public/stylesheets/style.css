@@ -7,6 +7,13 @@ a {
   color: #00B7FF;
 }
 
+.message {
+  margin-top: 10px;
+  background-color: lightgrey;
+  padding: 5px 5px 5px 10px;
+  border-radius: 10px;
+}
+
 .app{
   display:flex;
   flex-direction: row;

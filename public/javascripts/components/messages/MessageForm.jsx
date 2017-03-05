@@ -6,7 +6,7 @@ class MessageForm extends Component {
     e.preventDefault();
     const targetNode = this.refs.message;
     const message = targetNode.value;
-    this.props.addMessage(message);
+    this.props.addMessage(message, this.props.activeGroup);
     targetNode.value = '';
   }
   render() {
@@ -14,7 +14,7 @@ class MessageForm extends Component {
     return (
       <form onSubmit={this.onSubmit.bind(this)}>
         <div className="form-group">
-          {this.props.activeGroup.id !== undefined && <input
+          {this.props.activeGroup._id !== undefined && <input
             type="text"
             ref="message"
             className='form-control'

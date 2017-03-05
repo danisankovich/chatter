@@ -3,7 +3,6 @@ import GroupForm from './GroupForm.jsx';
 import GroupCollection from './GroupCollection.jsx';
 
 class GroupSection extends Component {
-
   render() {
     const { group } = this.props
     return (

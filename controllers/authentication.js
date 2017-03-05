@@ -33,7 +33,7 @@ exports.signup = function(req, res, next) {
           newUser.password = hash;
           newUser.save((err) => {
             if (err) return next(err);
-            res.json({token: tokenForUser(newUser)});
+            res.json({user: newUser, token: tokenForUser(newUser)});
           });
         })
       })
@@ -42,7 +42,21 @@ exports.signup = function(req, res, next) {
 }
 
 exports.signin = function(req, res, next) {
-  res.send({token: tokenForUser(req.user)});
+  const token = tokenForUser(req.user);
+  if(token) {
+    try {
+      const decoded = jwt.decode(token, config.secret);
+      User.findById(decoded.sub, (err, user) => {
+        res.send({user, token})
+      })
+     }
+     catch (e) {
+       return res.status(401).send('authorization required');
+     }
+  }
+  else {
+    res.send({user: "NO_USER"})
+  }
 }
 exports.getUser = (req, res) => {
   var token = req.headers.authorization;

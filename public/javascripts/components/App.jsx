@@ -6,6 +6,7 @@ import UserForm from './users/UserForm.jsx';
 
 import utils from '../utils';
 import $ from 'jquery';
+import fecha from 'fecha';
 
 class App extends Component {
   constructor(props) {
@@ -31,28 +32,47 @@ class App extends Component {
       console.log('error', err)
     });
   }
-  addGroup(groupName) {
+  addGroup(group) {
     const { groups } = this.state;
-    groups.push({ id: groups.length, name: groupName });
+    groups.push({ id: group.id, name: group.name });
     this.setState({ groups });
   }
   setGroup(activeGroup) {
-    this.setState({ activeGroup });
+    console.log(activeGroup)
+
+    $.ajax({
+       url: `group/api/getgroup/${activeGroup._id}`,
+       type: "GET",
+    }).done((group) => {
+      console.log(group)
+      this.setState({ activeGroup: group, messages: group.messages });
+    }).fail((err) => {
+      console.log('error', err)
+    });
   }
   setUserName(user) {
     const { users } = this.state;
     const currentUser = { id: user._id, username: user.username }
     users.push(currentUser);
-    console.log(users)
     this.setState({ users, currentUser });
   }
-  addMessage(newMessage) {
+  addMessage(newMessage, activeGroup) {
     const { messages, users } = this.state;
-    const createdAt = new Date;
+    let createdAt = new Date;
+    createdAt = fecha.format(createdAt, 'HH:mm:ss MM/DD/YYYY');
     const author = this.state.currentUser;
-    messages.push({ id: messages.length, body: newMessage, createdAt, author });
-    this.setState({ messages });
-    console.log(messages)
+    const messageObject = { body: newMessage, createdAt, author };
+    $.ajax({
+       url: `group/api/newmessage/${activeGroup._id}`,
+       type: "POST",
+       data: {data: JSON.stringify(messageObject)},
+    }).done((changedMessages) => {
+      console.log(changedMessages, 'jjjj')
+      // messages.push(message);
+      this.setState({ messages: changedMessages });
+    }).fail((err) => {
+      console.log('error', err)
+    });
   }
   render() {
     const { group } = this.props
@@ -80,7 +100,7 @@ class App extends Component {
       {
         !this.state.currentUser &&
           <div>
-            <UserForm {...this.props} setUserName={this.setUserName.bind(this)} />
+            <UserForm {...this.props } setUserName={this.setUserName.bind(this)} />
           </div>
       }
       </div>

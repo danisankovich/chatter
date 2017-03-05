@@ -7,7 +7,8 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
 var routes = require('./routes/index');
-
+var group = require('./routes/group');
+var ejs = require('ejs')
 var app = express();
 
 
@@ -15,7 +16,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:auth/chatter');
 
 // view engine setup
 // app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'html');
+app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -26,6 +27,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
+app.use('/group', group);
 
 // app.set('view engine', 'ejs');
 app.get('*', (req, res) => {

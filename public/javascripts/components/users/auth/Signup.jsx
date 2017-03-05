@@ -15,7 +15,8 @@ class Signup extends Component {
       data: {email, password, username},
     }).done(response => {
       localStorage.setItem('chatteruser', response.token);
-      this.setUser(response);
+      this.setUser(response.user);
+
     }).fail((error) => {
       console.log(error.responseText)
     });
@@ -54,28 +55,6 @@ class Signup extends Component {
       </form>
     );
   }
-}
-
-function validate(formProps) {
-  const errors = {};
-
-  if (!formProps.email) {
-    errors.email = 'Please Enter Your Email';
-  }
-  if (!formProps.username) {
-    errors.username = 'Please Enter Your Username';
-  }
-  if (!formProps.password) {
-    errors.password = 'Please Enter a Password';
-  }
-  if (!formProps.passwordConfirm) {
-    errors.passwordConfirm = 'Please Re-enter the Password';
-  }
-
-  if(formProps.password !== formProps.passwordConfirm) {
-    errors.password = 'Passwords must match';
-  }
-  return errors;
 }
 
 module.exports = Signup;

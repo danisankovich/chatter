@@ -1,4 +1,5 @@
 import React, {Component, PropTypes} from 'react';
+import $ from 'jquery';
 
 class GroupForm extends Component {
 
@@ -6,8 +7,17 @@ class GroupForm extends Component {
     e.preventDefault();
     const targetGroup = this.refs.group;
     const groupName = targetGroup.value;
-    this.props.addGroup(groupName);
     targetGroup.value = '';
+    console.log(groupName)
+    $.post('group/api/newgroup',
+      { name: groupName }
+    )
+    .done((response) => {
+      this.props.addGroup(response);
+
+    }).fail((error) => {
+      console.log(error.responseText)
+    });
   }
   render() {
     const { group } = this.props
