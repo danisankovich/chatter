@@ -11,7 +11,6 @@ class MessageForm extends Component {
   }
   render() {
     let input;
-    console.log(this.props.activeGroup)
     return (
       <form onSubmit={this.onSubmit.bind(this)}>
         <div className="form-group">

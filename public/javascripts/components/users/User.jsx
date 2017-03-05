@@ -3,7 +3,8 @@ import React, {Component, PropTypes} from 'react';
 class User extends Component {
 
   render() {
-    return <li>{this.props.user.name}</li>
+    console.log(this.props.user)
+    return <li>{this.props.user.username}</li>
   }
 }
 

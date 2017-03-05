@@ -5,6 +5,7 @@ import MessageSection from './messages/MessageSection.jsx';
 import UserForm from './users/UserForm.jsx';
 
 import utils from '../utils';
+import $ from 'jquery';
 
 class App extends Component {
   constructor(props) {
@@ -17,13 +18,18 @@ class App extends Component {
     }
   }
   componentDidMount() {
-    const localUser = utils.getUser();
-    console.log(localUser)
-    if (localUser) {
-      this.setState({
-        currentUser: localUser,
-      });
-    }
+    const token = localStorage.getItem('chatteruser')
+    $.ajax({
+       url: '/api/',
+       type: "GET",
+       headers: {
+          "authorization": token
+       }
+    }).done((user) => {
+      this.setUserName(user);
+    }).fail((err) => {
+      console.log('error', err)
+    });
   }
   addGroup(groupName) {
     const { groups } = this.state;
@@ -33,11 +39,11 @@ class App extends Component {
   setGroup(activeGroup) {
     this.setState({ activeGroup });
   }
-  setUserName(userName) {
+  setUserName(user) {
     const { users } = this.state;
-    const currentUser = { id: users.length, name: userName }
+    const currentUser = { id: user._id, username: user.username }
     users.push(currentUser);
-    localStorage.setItem('chatteruser', JSON.stringify(currentUser));
+    console.log(users)
     this.setState({ users, currentUser });
   }
   addMessage(newMessage) {
@@ -46,6 +52,7 @@ class App extends Component {
     const author = this.state.currentUser;
     messages.push({ id: messages.length, body: newMessage, createdAt, author });
     this.setState({ messages });
+    console.log(messages)
   }
   render() {
     const { group } = this.props
