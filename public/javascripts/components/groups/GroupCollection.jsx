@@ -6,22 +6,11 @@ import Group from './Group.jsx';
 class GroupCollection extends Component {
   constructor(props) {
     super(props)
-    this.state = { };
   }
-  componentDidMount() {
-    $.ajax({
-       url: 'group/api/',
-       type: "GET",
-    }).done((groups) => {
-      this.setState({ groups });
-    }).fail((err) => {
-      console.log('error', err)
-    });
-  }
+
   render() {
-    let { setGroup } = this.props;
-    const { groups } = this.state;
-    return (<div>
+    let { setGroup, groups } = this.props;
+    return (<div className='scroll-groups'>
       {groups && <ul>
         {groups.map(group =>
           <Group

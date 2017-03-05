@@ -9,7 +9,6 @@ class Signin extends Component {
     $.post(`/api/signin`, { email, password })
       .done(response => {
         localStorage.setItem('chatteruser', response.token);
-        console.log(response.user);
         this.setUser(response.user);
       })
       .fail((err) => {

@@ -6,7 +6,7 @@ class MessageSection extends Component {
 
   render() {
     const { activeGroup } = this.props;
-    console.log(this.props.activeGroup)
+
     return (
       <div className="messages-container panel panel-default">
         <div className="panel-heading"><strong>{activeGroup.name}</strong></div>

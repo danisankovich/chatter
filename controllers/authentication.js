@@ -1,7 +1,6 @@
 var User = require('../models/user');
 var jwt = require('jwt-simple');
 var config = require('../config');
-console.log(config)
 var bcrypt = require('bcrypt-nodejs');
 
 tokenForUser = (user) => {

@@ -4,7 +4,6 @@ import User from './User.jsx';
 class UserCollection extends Component {
 
   render() {
-    console.log(this.props.users)
     return (
       <ul>
         {

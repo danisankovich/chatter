@@ -49,6 +49,9 @@ a {
   flex: 1;
   overflow-y: auto;
 }
+.scroll-groups {
+  overflow: scroll;
+}
 .message{
   /*display: flex;*/
 }

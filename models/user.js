@@ -13,7 +13,6 @@ var userSchema = new Schema({
 userSchema.methods.comparePassword = function(candidatePassword, cb) {
   var pwd = this.password
   bcrypt.compare(candidatePassword, pwd, function(err, isMatch) {
-    console.log(candidatePassword == pwd, isMatch)
     if (err) {return cb(err); }
     cb(null, isMatch);
   });

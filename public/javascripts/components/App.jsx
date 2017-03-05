@@ -31,20 +31,26 @@ class App extends Component {
     }).fail((err) => {
       console.log('error', err)
     });
+    $.ajax({
+       url: 'group/api/',
+       type: "GET",
+    }).done((groups) => {
+      this.setState({ groups });
+    }).fail((err) => {
+      console.log('error', err)
+    });
   }
+
   addGroup(group) {
     const { groups } = this.state;
-    groups.push({ id: group.id, name: group.name });
+    groups.push({ _id: group.id, name: group.name });
     this.setState({ groups });
   }
   setGroup(activeGroup) {
-    console.log(activeGroup)
-
     $.ajax({
        url: `group/api/getgroup/${activeGroup._id}`,
        type: "GET",
     }).done((group) => {
-      console.log(group)
       this.setState({ activeGroup: group, messages: group.messages });
     }).fail((err) => {
       console.log('error', err)
@@ -67,8 +73,6 @@ class App extends Component {
        type: "POST",
        data: {data: JSON.stringify(messageObject)},
     }).done((changedMessages) => {
-      console.log(changedMessages, 'jjjj')
-      // messages.push(message);
       this.setState({ messages: changedMessages });
     }).fail((err) => {
       console.log('error', err)
