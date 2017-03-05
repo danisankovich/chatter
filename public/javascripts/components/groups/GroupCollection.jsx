@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import $ from 'jquery';
+import {sortBy} from 'lodash';
 
 import Group from './Group.jsx';
 
@@ -10,6 +11,7 @@ class GroupCollection extends Component {
 
   render() {
     let { setGroup, groups } = this.props;
+    groups = _.sortBy(groups, 'name');
     return (<div className='scroll-groups'>
       {groups && <ul>
         {groups.map(group =>

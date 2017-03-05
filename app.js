@@ -31,11 +31,12 @@ const userTracker = {};
 
 socketio.listen(server).on('connection', (socket) => {
   socket.on('message', (msg) => {
-    console.log('message received: ', msg);
     socket.broadcast.emit('message', msg);
   });
+  socket.on('newgroup', () => {
+    socket.broadcast.emit('newgroup', {});
+  });
   socket.on('enter', (user) => {
-    console.log(user, 'laks');
     if (user && !userTracker[user.id]) {
       userTracker[user.id] = user;
     }

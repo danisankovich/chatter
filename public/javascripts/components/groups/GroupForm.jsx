@@ -19,7 +19,7 @@ class GroupForm extends Component {
     .done((response) => {
       this.props.addGroup(response);
     }).fail((error) => {
-      console.log(error.responseText)
+      alert(error.responseText)
     });
   }
   render() {

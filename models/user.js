@@ -4,10 +4,8 @@ var bcrypt = require('bcrypt-nodejs');
 
 var userSchema = new Schema({
   email: {type: String, lowercase: true, required: true},
-  username: {type: String, lowercase: true, require: true},
+  username: {type: String, lowercase: true, require: true, unique: true},
   password: String,
-  aboutMe: String,
-  avatar: String, //default to gravatar????
 });
 
 userSchema.methods.comparePassword = function(candidatePassword, cb) {

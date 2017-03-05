@@ -8,7 +8,7 @@ class Group extends Component {
   }
   render() {
     const { group, activeGroup } = this.props
-    const active = group === activeGroup ? 'active' : '';
+    const active = group.name === activeGroup.name ? 'active' : '';
 
     return (
       <li className={active}>

@@ -15,10 +15,16 @@ exports.signup = function(req, res, next) {
   if (!email || !password) {
     return res.status(422).send({error: 'Email and Password Must Be Provided'});
   }
-  User.findOne({email: email}, (err, user) => {
+
+  User.findOne({$or: [{email: req.body.email}, {username: req.body.username}]}, (err, user) => {
     if (err) return next(err);
     if (user) {
-      return res.status(422).send({error: 'Email Already In Use'});
+      if (user.email === req.body.email) {
+        return res.status(422).send({error: 'Email Already In Use'});
+      }
+      if (user.username === req.body.username) {
+        return res.status(422).send({error: 'Username Already In Use'});
+      }
     } else {
       var newUser = new User({
         email: email,

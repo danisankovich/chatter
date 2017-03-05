@@ -53,6 +53,16 @@ class App extends Component {
         const users = _.map(list, user => user);
         this.setState({ users: uniqBy(users, 'id') })
       })
+      iosocket.on('newgroup', () => {
+        $.ajax({
+           url: 'group/api/',
+           type: "GET",
+        }).done((groups) => {
+          this.setState({ groups });
+        }).fail((err) => {
+          console.log('error', err)
+        });
+      })
       iosocket.on('disconnect', () => {
         console.log('disconnected')
       });
@@ -63,6 +73,7 @@ class App extends Component {
     const { groups } = this.state;
     groups.push({ _id: group.id, name: group.name });
     this.setState({ groups });
+    iosocket.emit('newgroup', {});
   }
   setGroup(activeGroup) {
     $.ajax({

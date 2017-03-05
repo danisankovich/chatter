@@ -9,7 +9,7 @@ class UserCollection extends Component {
       <ul>
         {
           users.map(user =>
-            <User
+            <User currentUser={this.props.currentUser}
               key={user.id}
               user={user}
             />
