@@ -4,6 +4,7 @@ import Message from './Message.jsx';
 
 class MessageCollection extends Component {
   render() {
+    // because messages do not have their own unique id keys, create them for better tracker
     let messageId = 0;
     return (
       <div>
@@ -26,6 +27,7 @@ class MessageCollection extends Component {
 
 MessageCollection.propTypes = {
   messages: PropTypes.array.isRequired,
+  signOut: PropTypes.func.isRequired,
 }
 
 export default MessageCollection;

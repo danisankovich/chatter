@@ -1,5 +1,6 @@
 import {EOL as eol} from 'os';
 module.exports = {
+  // checks password on signup to make sure if follws standards (lowercase, uppercase, number, length)
   invalidPasswordCheck: (password, passwordConfirm) => {
     let errorString = '';
 

@@ -5,12 +5,12 @@ import User from './User.jsx';
 class UserCollection extends Component {
 
   render() {
-    const {users} = this.props;
+    const {users, currentUser} = this.props;
     return (
       <ul>
         {
           users.map(user =>
-            <User currentUser={this.props.currentUser}
+            <User currentUser={currentUser}
               key={user.id}
               user={user}
             />
@@ -24,6 +24,7 @@ class UserCollection extends Component {
 
 UserCollection.propTypes = {
   users: PropTypes.array.isRequired,
+  currentUser: PropTypes.object.isRequired,
 }
 
 export default UserCollection;

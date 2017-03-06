@@ -6,11 +6,16 @@ import Signin from './auth/Signin.jsx';
 class UserForm extends Component {
   constructor(props) {
     super(props);
+    //initialized state is on signup form
     this.state = { form: 'signup' };
   }
+
+  // link to render signin form.
   toSignInPage() {
     this.setState({ form: 'signin' });
   }
+
+  //link to render signup form
   toSignUpPage() {
     this.setState({ form: 'signup' });
   }

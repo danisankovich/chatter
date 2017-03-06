@@ -1,9 +1,9 @@
-var express = require('express');
-var router = express.Router();
-var expressJwt = require('express-jwt');
-var config = require('../config');
-var jwt = require('jwt-simple');
-var request = require('request');
+const express = require('express');
+const router = express.Router();
+const expressJwt = require('express-jwt');
+const config = require('../config');
+const jwt = require('jwt-simple');
+const request = require('request');
 
 const Authentication = require('../controllers/authentication');
 const passportService = require('../services/passport');

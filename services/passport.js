@@ -1,15 +1,19 @@
-var passport = require('passport');
-var User = require('../models/user');
-var config = require('../config');
-var JwtStrategy = require('passport-jwt').Strategy;
-var ExtractJwt = require('passport-jwt').ExtractJwt;
-var LocalStrategy = require('passport-local');
+const passport = require('passport');
+const User = require('../models/user');
+const config = require('../config');
+const JwtStrategy = require('passport-jwt').Strategy;
+const ExtractJwt = require('passport-jwt').ExtractJwt;
+const LocalStrategy = require('passport-local');
 
-var localOptions = {usernameField: 'email'};
-var localLogin = new LocalStrategy(localOptions, (email, password, done) => {
+const localOptions = {usernameField: 'email'};
+
+//sets up local login using JWT
+const localLogin = new LocalStrategy(localOptions, (email, password, done) => {
   User.findOne({ email: email }, (err, user) => {
     if (err) { return done(err); }
     if(!user) { return done(null, false); }
+
+    //compares the two passwords (one from the candidate user object, one from the login form) to ensure they are the same on signin
     user.comparePassword(password, (err, isMatch) => {
       if (err) { return done(err); }
       if (!isMatch) { return done(null, false); }

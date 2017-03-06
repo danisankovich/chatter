@@ -1,57 +1,77 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var mongoose = require('mongoose');
+const express = require('express');
+const path = require('path');
+const favicon = require('serve-favicon');
+const logger = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const http = require('http');
+const debug = require('debug')('chat:server');
 
-var routes = require('./routes/index');
-var group = require('./routes/group');
-var ejs = require('ejs')
-var http = require('http');
-var socketio = require('socket.io');
-var debug = require('debug')('chat:server');
+const socketio = require('socket.io');
 
-const fs = require('fs');
+// linking up the route files
+const routes = require('./routes/index');
+const group = require('./routes/group');
 
-var app = express();
-
-var port = normalizePort(process.env.PORT || '3000');
+// fire up the server
+const app = express();
+const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
-var server = http.createServer(app);
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+
+app.use(logger('dev'));
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use('/', routes);
+app.use('/group', group);
+
+const server = http.createServer(app);
 
 server.listen(port);
 
 server.on('error', onError);
 server.on('listening', onListening);
 
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:auth/chatter');
+
+// tracks the users currently logged in
 const userTracker = {};
 
 socketio.listen(server).on('connection', (socket) => {
   socket.on('message', (msg) => {
     socket.broadcast.emit('message', msg);
   });
+
   socket.on('newgroup', () => {
     socket.broadcast.emit('newgroup', {});
   });
+
   socket.on('enter', (user) => {
     if (user && !userTracker[user.id]) {
       userTracker[user.id] = user;
     }
     socket.broadcast.emit('enter', userTracker);
     socket.emit('enter', userTracker);
-  })
+  });
+
   socket.on('userleft', (user) => {
     if (user && userTracker[user.id]) {
       delete userTracker[user.id]
     }
     socket.broadcast.emit('userleft', userTracker);
-  })
+  });
+
   socket.emit('enter', userTracker)
 });
 
+// formats/validates the port
 function normalizePort(val) {
   var port = parseInt(val, 10);
 
@@ -100,40 +120,21 @@ function onListening() {
   debug('Listening on ' + bind);
 }
 
-
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:auth/chatter');
-
-
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-
-
-var permitCrossDomainRequests = function(req, res, next) {
-res.header('Access-Control-Allow-Origin', '*');
-res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-res.header('Access-Control-Allow-Headers', 'Content-Type');
-// some browsers send a pre-flight OPTIONS request to check if CORS is enabled so you have to also respond to that
-if ('OPTIONS' === req.method) {
-  res.send(200);
-}
-else {
-  next();
-}
+// cross-origins allowances
+const permitCrossDomainRequests = function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  // some browsers send a pre-flight OPTIONS request to check if CORS is enabled so you have to also respond to that
+  if ('OPTIONS' === req.method) {
+    res.send(200);
+  }
+  else {
+    next();
+  }
 };
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
-app.use(bodyParser.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({ limit: '50mb', extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
-app.use('/group', group);
-
-// app.set('view engine', 'ejs');
+// serves up the index.html entry point for all routes
 app.get('*', (req, res) => {
   var indexPath = path.join(__dirname, 'views/index.html');
   res.sendFile(indexPath);

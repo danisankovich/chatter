@@ -12,17 +12,20 @@ class GroupCollection extends Component {
   render() {
     let { setGroup, groups } = this.props;
     groups = _.sortBy(groups, 'name');
-    return (<div className='scroll-groups'>
-      {groups && <ul>
-        {groups.map(group =>
-          <Group
-            group={group}
-            key={group._id}
-            {...this.props}
-          />
-        )}
-      </ul>}
-      {!groups && <p>Loading...</p>}
+
+    // map over all groups and return the list
+    return (
+      <div className='scroll-groups'>
+        {groups && <ul>
+          {groups.map(group =>
+            <Group
+              group={group}
+              key={group._id}
+              {...this.props}
+            />
+          )}
+        </ul>}
+        {!groups && <p>Loading...</p>}
       </div>
     )
   }

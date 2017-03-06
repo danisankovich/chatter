@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import $ from 'jquery';
 
 class Signin extends Component {
-  handleFormSubmit(e) { //called with props from submit form
+  handleFormSubmit(e) {
     e.preventDefault();
     const { email, password } = this.state;
 
@@ -17,6 +17,8 @@ class Signin extends Component {
         alert('password/username combination not found');
       })
   }
+
+  //send the logged in user data up
   setUser(user) {
     this.props.setUserName(user);
   }
@@ -25,7 +27,6 @@ class Signin extends Component {
     this.setState({[type]: e.target.value});
   }
   render() {
-    // const { handleSubmit, fields: {email, username, password, passwordConfirm }} = this.props;
     return (
       <form onSubmit={this.handleFormSubmit.bind(this)}>
         <fieldset className="form-group">
@@ -40,6 +41,10 @@ class Signin extends Component {
       </form>
     );
   }
+}
+
+Signin.propTypes = {
+  setUserName: PropTypes.func.isRequired,
 }
 
 module.exports = Signin;

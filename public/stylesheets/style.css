@@ -1,5 +1,5 @@
 body {
-  padding: 50px;
+  padding: 0, 50px, 20px, 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
@@ -55,9 +55,13 @@ a {
   height: 88%;
 }
 
+.group-form {
+  position: static;
+}
+
 .signout-button {
-  right: 65px;
-  top: 50px;
+  right: 16px;
+  top: 0px;
   position: absolute;
   height: 40px;
 }
@@ -69,7 +73,7 @@ a {
 
 .message-form {
   position: absolute;
-  bottom: -30px;
+  bottom: 5px;
   width: 68%;
 }
 
@@ -80,9 +84,7 @@ a {
 .scroll-groups {
   overflow: scroll;
 }
-.message{
-  /*display: flex;*/
-}
+
 .message > .author{
   flex-basis: 100%;
 }

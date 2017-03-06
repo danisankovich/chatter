@@ -4,6 +4,8 @@ class Message extends Component {
 
   render() {
     const { message, currentUser } = this.props;
+
+    // dynamically set class to alter bg colors for currentUser's posts
     const messageClass = currentUser.username === message.author.username ? 'message mine' : 'message theirs';
     return (
       <li className={messageClass}>
@@ -19,6 +21,7 @@ class Message extends Component {
 
 Message.propTypes = {
   message: PropTypes.object.isRequired,
+  currentUser: PropTypes.object.isRequired,
 }
 
 export default Message;

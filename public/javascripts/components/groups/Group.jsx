@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 
 class Group extends Component {
-  onClick(e) {
+  makeActiveGroup(e) {
     e.preventDefault();
     const { setGroup, group } = this.props;
     setGroup(group);
@@ -12,7 +12,7 @@ class Group extends Component {
 
     return (
       <li className={active}>
-        <a onClick={this.onClick.bind(this)}>
+        <a onClick={this.makeActiveGroup.bind(this)}>
           {group.name}
         </a>
       </li>
