@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import $ from 'jquery';
 
-import { invalidPasswordCheck } from '../../../utils';
+import { invalidPasswordCheck } from '../../../public/javascripts/utils';
 
 class Signup extends Component {
   handleFormSubmit(e) {

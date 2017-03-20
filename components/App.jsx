@@ -5,7 +5,7 @@ import $ from 'jquery';
 import fecha from 'fecha';
 import { uniqBy } from 'lodash';
 
-import utils from '../utils';
+import utils from '../public/javascripts/utils';
 
 import GroupSection from './groups/GroupSection.jsx';
 import UserSection from './users/UserSection.jsx';
