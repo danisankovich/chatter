@@ -3,7 +3,7 @@ var router = express.Router();
 const jwt = require('jwt-simple');
 
 const passport = require('passport');
-const requireAuth = passport.authenticate('jwt', {session: false}); //token based, not session
+const requireAuth = passport.authenticate('jwt', {session: false});
 
 const Group = require('../controllers/group');
 router.get('/api/', requireAuth, Group.getGroups);

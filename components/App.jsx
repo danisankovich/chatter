@@ -1,7 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 
 const iosocket = io.connect()
-import $ from 'jquery';
 import fecha from 'fecha';
 import { uniqBy } from 'lodash';
 

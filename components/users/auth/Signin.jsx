@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import $ from 'jquery';
 
 class Signin extends Component {
   handleFormSubmit(e) {

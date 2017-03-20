@@ -56,7 +56,6 @@ exports.deleteGroup = function(req, res, next) {
   Group.findByIdAndRemove(groupId, function(err, group) {
     if (err) res.send(err);
     const response = {
-      message: "Todo successfully deleted",
       _id: group._id,
     };
     res.send(response);
@@ -64,18 +63,16 @@ exports.deleteGroup = function(req, res, next) {
 }
 exports.editgroup = function(req, res, next) {
   if (!req.user || !req.user._id) {
-    console.log('this is why, no req user')
     res.send('cannot delete. invalid input');
   }
-  console.log(req.params.id)
 
   if (!req.user.isAdmin && req.headers.creatorid !== req.user._id.toString()) {
-    return res.status(401).send('only admins or the group creator can delete groups');
+    return res.status(401).send('only admins or the group creator can edit groups');
 
   }
   const groupId = req.params.id;
   const body = JSON.parse(req.body.group);
-  console.log(req.body.newName)
+
   Group.findByIdAndUpdate(groupId,
     {name: req.body.newName},
     {safe: true, upsert: false},

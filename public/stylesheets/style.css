@@ -83,6 +83,7 @@ a {
 }
 .scroll-groups {
   overflow: scroll;
+  height: 100%;
 }
 
 .message > .author{

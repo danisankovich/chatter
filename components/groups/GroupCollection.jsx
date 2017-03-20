@@ -1,5 +1,4 @@
 import React, {PropTypes, Component} from 'react';
-import $ from 'jquery';
 import {sortBy} from 'lodash';
 
 import Group from './Group.jsx';
@@ -9,6 +8,7 @@ class GroupCollection extends Component {
   componentWillMount() {
     this.setState({editGroup: ''});
   }
+
   deleteGroup(id, creatorId) {
     const token = localStorage.getItem('chatteruser')
     $.ajax({
@@ -26,13 +26,16 @@ class GroupCollection extends Component {
       alert(error.responseText)
     });
   }
+
   setEditGroup(group) {
     this.setState({editGroup: group});
     console.log(group)
   }
+
   onChange(e) {
     this.setState({nameInput: e.target.value})
   }
+
   editGroup(params, e) {
     e.preventDefault();
     const token = localStorage.getItem('chatteruser');
@@ -53,6 +56,7 @@ class GroupCollection extends Component {
       response.newName = newName;
       // if the post was successful, add group to state and update users
       this.props.editGroup(response, this.props.activeGroup);
+      $('#myModal').modal('toggle');
     }).fail((error) => {
       alert(error.responseText)
     });
@@ -62,9 +66,8 @@ class GroupCollection extends Component {
     let { setGroup, groups } = this.props;
 
     groups = _.sortBy(groups, 'name');
+    
     return (
-
-
       <div className='scroll-groups'>
         {groups && <ul>
           {groups.map(group =>

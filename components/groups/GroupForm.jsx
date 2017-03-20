@@ -1,5 +1,4 @@
 import React, {Component, PropTypes} from 'react';
-import $ from 'jquery';
 const token = localStorage.getItem('chatteruser')
 
 class GroupForm extends Component {

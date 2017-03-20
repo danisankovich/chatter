@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import $ from 'jquery';
 
 import { invalidPasswordCheck } from '../../../public/javascripts/utils';
 
@@ -19,7 +18,7 @@ class Signup extends Component {
       alert('Invalid Email')
       return;
     }
-    
+
     $.ajax({
       url: `/api/signup`,
       type: "POST",
