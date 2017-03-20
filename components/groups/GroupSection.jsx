@@ -23,6 +23,7 @@ GroupSection.propTypes = {
   groups: PropTypes.array.isRequired,
   setGroup: PropTypes.func.isRequired,
   addGroup: PropTypes.func.isRequired,
+  deleteGroup: PropTypes.func.isRequired,
   activeGroup: PropTypes.object.isRequired,
 }
 

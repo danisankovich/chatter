@@ -1,12 +1,15 @@
-import React, {PropTypes} from 'react';
+import React, {PropTypes, Component} from 'react';
 import $ from 'jquery';
 import {sortBy} from 'lodash';
 
 import Group from './Group.jsx';
 const token = localStorage.getItem('chatteruser')
 
-const GroupCollection = (props) => {
-  const deleteGroup = (id, creatorId) => {
+class GroupCollection extends Component {
+  componentWillMount() {
+    this.setState({editGroup: ''});
+  }
+  deleteGroup(id, creatorId) {
     const token = localStorage.getItem('chatteruser')
     $.ajax({
        url: `/group/api/deletegroup/${id}`,
@@ -18,21 +21,27 @@ const GroupCollection = (props) => {
     })
     .done((response) => {
       // if the post was successful, add group to state and update users
-      props.deleteGroup(response, props.activeGroup);
+      this.props.deleteGroup(response, this.props.activeGroup);
     }).fail((error) => {
       alert(error.responseText)
     });
   }
-  const editGroup = (params, e) => {
+  setEditGroup(group) {
+    this.setState({editGroup: group});
+    console.log(group)
+  }
+  onChange(e) {
+    this.setState({nameInput: e.target.value})
+  }
+  editGroup(params, e) {
     e.preventDefault();
     const token = localStorage.getItem('chatteruser');
-    const [group, id, newName] = params;
+    const [group, newName] = params;
     if (newName.trim().length === 0) {
       return;
     }
-    console.log(group, id, newName)
     $.ajax({
-       url: `/group/api/editgroup/${id}`,
+       url: `/group/api/editgroup/${group._id}`,
        type: "PUT",
        headers: {
           "authorization": token,
@@ -43,31 +52,56 @@ const GroupCollection = (props) => {
     .done((response) => {
       response.newName = newName;
       // if the post was successful, add group to state and update users
-      props.editGroup(response, props.activeGroup);
+      this.props.editGroup(response, this.props.activeGroup);
     }).fail((error) => {
       alert(error.responseText)
     });
   }
-  let { setGroup, groups } = props;
-  groups = _.sortBy(groups, 'name');
-
   // map over all groups and return the list
-  return (
-    <div className='scroll-groups'>
-      {groups && <ul>
-        {groups.map(group =>
-          <Group
-            group={group}
-            key={group._id}
-            {...props}
-            deleteGroup={deleteGroup}
-            editGroup={editGroup}
-          />
-        )}
-      </ul>}
-      {!groups && <p>Loading...</p>}
-    </div>
-  )
+  render() {
+    let { setGroup, groups } = this.props;
+
+    groups = _.sortBy(groups, 'name');
+    return (
+
+
+      <div className='scroll-groups'>
+        {groups && <ul>
+          {groups.map(group =>
+            <Group
+              group={group}
+              key={group._id}
+              {...this.props}
+              deleteGroup={this.deleteGroup.bind(this)}
+              setEditGroup={this.setEditGroup.bind(this)}
+            />
+          )}
+        </ul>}
+        {!groups && <p>Loading...</p>}
+
+        <div className="modal fade" id='myModal' role="dialog">
+          <div className="modal-dialog">
+
+            <div className="modal-content">
+              <div className="modal-header">
+                <button type="button" className="close" data-dismiss="modal">&times;</button>
+                <h4>Edit Group Name</h4>
+              </div>
+              <div className="modal-body">
+                <form role="form" onSubmit={this.editGroup.bind(this, [this.state.editGroup, this.state.nameInput])}>
+                  <div className="form-group">
+                    <input type="text" className="form-control" id="groupName" placeholder="Enter New Name" onChange={this.onChange.bind(this)}/>
+                  </div>
+                  <button type="submit" className="btn btn-success btn-block">Submit New Name</button>
+                </form>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    )
+  }
 }
 
 GroupCollection.propTypes = {
