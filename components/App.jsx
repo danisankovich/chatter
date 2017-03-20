@@ -120,7 +120,7 @@ class App extends Component {
   // when a new group is added, this is called to update the state and notify all channels
   addGroup(group) {
     const { groups } = this.state;
-    groups.push({ _id: group.id, name: group.name });
+    groups.push({ _id: group.id, name: group.name, creatorId: group.creatorId });
     this.setState({ groups });
     iosocket.emit('newgroup', {});
   }
@@ -135,6 +135,17 @@ class App extends Component {
       this.setState({activeGroup: {}})
     }
 
+    this.setState({ groups: newgroups });
+    iosocket.emit('newgroup', {});
+  }
+  editGroup(group, activeGroup) {
+    const { groups } = this.state;
+    const newgroups = groups.map(function( obj ) {
+      if (obj._id === group._id) {
+        obj.name = group.newName;
+      };
+      return obj;
+    });
     this.setState({ groups: newgroups });
     iosocket.emit('newgroup', {});
   }
@@ -216,6 +227,7 @@ class App extends Component {
                 {...this.state}
                 addGroup={this.addGroup.bind(this)}
                 deleteGroup={this.deleteGroup.bind(this)}
+                editGroup={this.editGroup.bind(this)}
                 setGroup={this.setGroup.bind(this)}
               />
               <UserSection

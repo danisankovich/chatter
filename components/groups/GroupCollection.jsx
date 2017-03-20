@@ -23,6 +23,31 @@ const GroupCollection = (props) => {
       alert(error.responseText)
     });
   }
+  const editGroup = (params, e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('chatteruser');
+    const [group, id, newName] = params;
+    if (newName.trim().length === 0) {
+      return;
+    }
+    console.log(group, id, newName)
+    $.ajax({
+       url: `/group/api/editgroup/${id}`,
+       type: "PUT",
+       headers: {
+          "authorization": token,
+          "creatorid": group.creatorId
+       },
+       data: {group: JSON.stringify(group), newName}
+    })
+    .done((response) => {
+      response.newName = newName;
+      // if the post was successful, add group to state and update users
+      props.editGroup(response, props.activeGroup);
+    }).fail((error) => {
+      alert(error.responseText)
+    });
+  }
   let { setGroup, groups } = props;
   groups = _.sortBy(groups, 'name');
 
@@ -36,6 +61,7 @@ const GroupCollection = (props) => {
             key={group._id}
             {...props}
             deleteGroup={deleteGroup}
+            editGroup={editGroup}
           />
         )}
       </ul>}

@@ -13,7 +13,7 @@ exports.newGroup = function(req, res, next) {
       data.creatorId = req.user._id;
       const newGroup = new Group(data);
       newGroup.save();
-      res.send({name: newGroup.name, id: newGroup._id});
+      res.send({name: newGroup.name, id: newGroup._id, creatorId: newGroup.creatorId});
     }
   });
 }
@@ -47,7 +47,7 @@ exports.deleteGroup = function(req, res, next) {
   if (!req.user || !req.user._id) {
     res.send('cannot delete. invalid input');
   }
-  if (req.headers.creatorid !== req.user._id.toString()) {
+  if (!req.user.isAdmin && req.headers.creatorid !== req.user._id.toString()) {
     return res.status(401).send('only admins or the group creator can delete groups');
 
   }
@@ -60,5 +60,28 @@ exports.deleteGroup = function(req, res, next) {
       _id: group._id,
     };
     res.send(response);
+  });
+}
+exports.editgroup = function(req, res, next) {
+  if (!req.user || !req.user._id) {
+    console.log('this is why, no req user')
+    res.send('cannot delete. invalid input');
+  }
+  console.log(req.params.id)
+
+  if (!req.user.isAdmin && req.headers.creatorid !== req.user._id.toString()) {
+    return res.status(401).send('only admins or the group creator can delete groups');
+
+  }
+  const groupId = req.params.id;
+  const body = JSON.parse(req.body.group);
+  console.log(req.body.newName)
+  Group.findByIdAndUpdate(groupId,
+    {name: req.body.newName},
+    {safe: true, upsert: false},
+    (err, group) => {
+      console.log(group)
+      if (err) return next(err);
+      res.send(group);
   });
 }
