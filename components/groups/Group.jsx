@@ -6,7 +6,7 @@ const Group = (props) => {
     const { setGroup, group } = props;
     setGroup(group);
   }
-  const { group, activeGroup } = props;
+  const { group, activeGroup, deleteGroup } = props;
   const active = group.name === activeGroup.name ? 'active' : '';
 
   return (
@@ -14,6 +14,7 @@ const Group = (props) => {
       <a onClick={makeActiveGroup.bind(this)}>
         {group.name}
       </a>
+      <button onClick={deleteGroup.bind(this, group._id)}>X</button>
     </li>
   )
 }
@@ -21,6 +22,7 @@ const Group = (props) => {
 Group.propTypes = {
   group: PropTypes.object.isRequired,
   setGroup: PropTypes.func.isRequired,
+  deleteGroup: PropTypes.func.isRequired,
   activeGroup: PropTypes.object.isRequired
 }
 

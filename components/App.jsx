@@ -121,6 +121,20 @@ class App extends Component {
     this.setState({ groups });
     iosocket.emit('newgroup', {});
   }
+  deleteGroup(group, activeGroup) {
+    const { groups } = this.state;
+
+    const newgroups = groups.filter(function( obj ) {
+      return obj._id !== group._id;
+    });
+
+    if (group._id === activeGroup._id) {
+      this.setState({activeGroup: {}})
+    }
+    
+    this.setState({ groups: newgroups });
+    iosocket.emit('newgroup', {});
+  }
 
   // sets the desired group as the current users active/open group
   setGroup(activeGroup) {
@@ -195,6 +209,7 @@ class App extends Component {
               <GroupSection
                 {...this.state}
                 addGroup={this.addGroup.bind(this)}
+                deleteGroup={this.deleteGroup.bind(this)}
                 setGroup={this.setGroup.bind(this)}
               />
               <UserSection

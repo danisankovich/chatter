@@ -3,9 +3,24 @@ import $ from 'jquery';
 import {sortBy} from 'lodash';
 
 import Group from './Group.jsx';
+const token = localStorage.getItem('chatteruser')
 
 const GroupCollection = (props) => {
-
+  const deleteGroup = (id) => {
+    $.ajax({
+       url: `/group/api/deletegroup/${id}`,
+       type: "DELETE",
+       headers: {
+          "authorization": token
+       },
+    })
+    .done((response) => {
+      // if the post was successful, add group to state and update users
+      props.deleteGroup(response, props.activeGroup);
+    }).fail((error) => {
+      alert(error)
+    });
+  }
   let { setGroup, groups } = props;
   groups = _.sortBy(groups, 'name');
 
@@ -18,6 +33,7 @@ const GroupCollection = (props) => {
             group={group}
             key={group._id}
             {...props}
+            deleteGroup={deleteGroup}
           />
         )}
       </ul>}

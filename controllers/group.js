@@ -37,3 +37,15 @@ exports.newMessage = function(req, res, next) {
       res.send(group.messages);
   });
 }
+
+exports.deleteGroup = function(req, res, next) {
+  const groupId = req.params.id;
+  Group.findByIdAndRemove(groupId, function(err, group) {
+    if (err) res.send(err);
+    const response = {
+      message: "Todo successfully deleted",
+      _id: group._id,
+    };
+    res.send(response);
+  });
+}
