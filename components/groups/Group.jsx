@@ -14,7 +14,7 @@ const Group = (props) => {
       <a onClick={makeActiveGroup.bind(this)}>
         {group.name}
       </a>
-      <span> | </span><a onClick={deleteGroup.bind(this, group._id)}>
+      <span> | </span><a onClick={deleteGroup.bind(this, group._id, group.creatorId)}>
         <span className="glyphicon glyphicon-remove"></span>
       </a>
     </li>

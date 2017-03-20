@@ -12,7 +12,6 @@ import UserSection from './users/UserSection.jsx';
 import MessageSection from './messages/MessageSection.jsx';
 import UserForm from './users/UserForm.jsx';
 
-const token = localStorage.getItem('chatteruser')
 
 class App extends Component {
   constructor(props) {
@@ -86,6 +85,8 @@ class App extends Component {
 
   // gets the user based off of a locally saved token, if it exists, automatically logging them in
   getCurrentuser() {
+    const token = localStorage.getItem('chatteruser')
+
     $.ajax({
        url: '/api/',
        type: "GET",
@@ -101,6 +102,8 @@ class App extends Component {
 
   //gets the list of all groups
   getGroupList() {
+    const token = localStorage.getItem('chatteruser')
+
     $.ajax({
        url: 'group/api/',
        type: "GET",
@@ -131,13 +134,15 @@ class App extends Component {
     if (group._id === activeGroup._id) {
       this.setState({activeGroup: {}})
     }
-    
+
     this.setState({ groups: newgroups });
     iosocket.emit('newgroup', {});
   }
 
   // sets the desired group as the current users active/open group
   setGroup(activeGroup) {
+    const token = localStorage.getItem('chatteruser')
+
     $.ajax({
        url: `group/api/getgroup/${activeGroup._id}`,
        type: "GET",
@@ -169,6 +174,7 @@ class App extends Component {
 
     const author = this.state.currentUser;
     const messageObject = { body: newMessage, createdAt, author };
+    const token = localStorage.getItem('chatteruser')
 
     $.ajax({
        url: `group/api/newmessage/${activeGroup._id}`,

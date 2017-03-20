@@ -6,19 +6,21 @@ import Group from './Group.jsx';
 const token = localStorage.getItem('chatteruser')
 
 const GroupCollection = (props) => {
-  const deleteGroup = (id) => {
+  const deleteGroup = (id, creatorId) => {
+    const token = localStorage.getItem('chatteruser')
     $.ajax({
        url: `/group/api/deletegroup/${id}`,
        type: "DELETE",
        headers: {
-          "authorization": token
+          "authorization": token,
+          "creatorid": creatorId
        },
     })
     .done((response) => {
       // if the post was successful, add group to state and update users
       props.deleteGroup(response, props.activeGroup);
     }).fail((error) => {
-      alert(error)
+      alert(error.responseText)
     });
   }
   let { setGroup, groups } = props;

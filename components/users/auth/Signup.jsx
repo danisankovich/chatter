@@ -19,7 +19,7 @@ class Signup extends Component {
       alert('Invalid Email')
       return;
     }
-
+    
     $.ajax({
       url: `/api/signup`,
       type: "POST",

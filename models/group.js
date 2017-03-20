@@ -4,6 +4,7 @@ var Schema = mongoose.Schema;
 var groupSchema = new Schema({
   name: { type: String, unique: true },
   messages: { type: Array },
+  creatorId: {type: String},
 });
 
 

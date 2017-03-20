@@ -1,12 +1,17 @@
 var Group = require('../models/group');
 
 exports.newGroup = function(req, res, next) {
+  if (!req.user || !req.user._id) {
+    res.send('Cannot Add, invalid input');
+  }
   Group.findOne({ name: req.body.name }, (err, group) => {
     if (err) return next(err);
     if (group) {
       return res.status(422).send({error: 'Group Already Exists'});
     } else {
-      const newGroup = new Group(req.body);
+      const data = req.body;
+      data.creatorId = req.user._id;
+      const newGroup = new Group(data);
       newGroup.save();
       res.send({name: newGroup.name, id: newGroup._id});
     }
@@ -39,7 +44,15 @@ exports.newMessage = function(req, res, next) {
 }
 
 exports.deleteGroup = function(req, res, next) {
+  if (!req.user || !req.user._id) {
+    res.send('cannot delete. invalid input');
+  }
+  if (req.headers.creatorid !== req.user._id.toString()) {
+    return res.status(401).send('only admins or the group creator can delete groups');
+
+  }
   const groupId = req.params.id;
+
   Group.findByIdAndRemove(groupId, function(err, group) {
     if (err) res.send(err);
     const response = {

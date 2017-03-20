@@ -13,6 +13,7 @@ class GroupForm extends Component {
       alert('Group Name Must Not Exceed 15 Characters.')
       return;
     }
+    const token = localStorage.getItem('chatteruser')
 
     targetGroup.value = '';
     $.ajax({
