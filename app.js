@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const http = require('http');
 const debug = require('debug')('chat:server');
+const uniqBy = require('lodash').uniqBy;
 
 const socketio = require('socket.io');
 
@@ -46,7 +47,6 @@ const userTracker = {};
 
 socketio.listen(server).on('connection', (socket) => {
   socket.on('message', (msg) => {
-    // socket.broadcast.emit('message', msg);
     socket.to(msg.activeGroup._id).emit('message', msg);
   });
 
@@ -56,22 +56,31 @@ socketio.listen(server).on('connection', (socket) => {
 
   socket.on('enter', (data) => {
     userTracker[data.group._id] = userTracker[data.group._id] || [];
+    userTracker[data.oldGroup._id] = userTracker[data.oldGroup._id] || [];
     const found = userTracker[data.group._id].find((user) => {
-      return user._id == data.user.id;
+      return user.id == data.user.id;
     });
     if (!found) {
       userTracker[data.group._id].push(data.user);
     }
+    const oldFound = userTracker[data.oldGroup._id].filter(function( obj ) {
+      return obj.id !== data.user.id;
+    });
+    userTracker[data.oldGroup._id] = oldFound;
     socket.join(data.group._id);
     socket.emit('enter', userTracker);
     socket.broadcast.emit('enter', userTracker);
   });
 
-  socket.on('userleft', (user) => {
-    if (user && userTracker[user.id]) {
-      delete userTracker[user.id]
+  socket.on('userleft', (data) => {
+    if (data.user && userTracker[data.group._id]) {
+      const newUsers = userTracker[data.group._id].filter(function( obj ) {
+        return obj.id !== data.user.id;
+      });
+      userTracker[data.group._id] = uniqBy(newUsers, 'id');
+      socket.emit('userleft', userTracker[data.group._id]);
+      socket.broadcast.emit('userleft', userTracker[data.group._id]);
     }
-    socket.broadcast.emit('userleft', userTracker);
   });
 
   socket.emit('enter', userTracker)

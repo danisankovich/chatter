@@ -36,7 +36,6 @@ class App extends Component {
         on a new message, sends to all users in that chatroom
       */
       iosocket.on('message', (data) => {
-        console.log('yeah it hit')
         if (this.state.activeGroup && data.activeGroup._id === this.state.activeGroup._id) {
           this.state.messages.push(data.messageObject);
           this.setState({messages: this.state.messages})
@@ -47,7 +46,6 @@ class App extends Component {
         when a user is logged in, add them to the users list
       */
       iosocket.on('enter', (list) => {
-        console.log(list)
         const users = _.map(list[this.state.activeGroup._id], user => user);
 
         if (this.state.currentUser) {
@@ -154,7 +152,7 @@ class App extends Component {
   // sets the desired group as the current users active/open group
   setGroup(activeGroup) {
     const token = localStorage.getItem('chatteruser')
-
+    const oldGroup = this.state.activeGroup;
     $.ajax({
        url: `group/api/getgroup/${activeGroup._id}`,
        type: "GET",
@@ -163,7 +161,7 @@ class App extends Component {
        }
     }).done((group) => {
       this.setState({ activeGroup: group, messages: group.messages });
-      iosocket.emit('enter', {user: this.state.currentUser, group});
+      iosocket.emit('enter', {user: this.state.currentUser, group, oldGroup});
 
     }).fail((err) => {
       console.log('error', err)
@@ -175,7 +173,6 @@ class App extends Component {
     const { users } = this.state;
     const currentUser = { id: user._id, username: user.username }
     users.push(currentUser)
-    // iosocket.emit('enter', currentUser);
     this.setState({ currentUser, users: uniqBy(users, 'id') });
   }
 
@@ -213,7 +210,9 @@ class App extends Component {
   // clears a users localstorage of their chatter token
   signOut() {
     localStorage.clear('chatteruser');
-    iosocket.emit('userleft', this.state.currentUser);
+    if (this.state.activeGroup) {
+      iosocket.emit('userleft', {user: this.state.currentUser, group: this.state.activeGroup});
+    }
     this.setState({currentUser: null});
   }
 
