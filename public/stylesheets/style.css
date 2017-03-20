@@ -103,6 +103,12 @@ a {
 .form-group{
   margin-bottom: 0;
 }
+
+.sepline {
+  padding: 5px 0 5px 0;
+  width: 85%;
+  border-bottom: lightgrey 1px solid;
+}
 ul{
   list-style-type:none;
   padding: 0;

@@ -7,14 +7,16 @@ const Group = (props) => {
     setGroup(group);
   }
   const { group, activeGroup, deleteGroup } = props;
-  const active = group.name === activeGroup.name ? 'active' : '';
+  const active = group.name === activeGroup.name ? 'active sepline' : 'sepline';
 
   return (
     <li className={active}>
       <a onClick={makeActiveGroup.bind(this)}>
         {group.name}
       </a>
-      <button onClick={deleteGroup.bind(this, group._id)}>X</button>
+      <span> | </span><a onClick={deleteGroup.bind(this, group._id)}>
+        <span className="glyphicon glyphicon-remove"></span>
+      </a>
     </li>
   )
 }
