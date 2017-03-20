@@ -12,6 +12,8 @@ import UserSection from './users/UserSection.jsx';
 import MessageSection from './messages/MessageSection.jsx';
 import UserForm from './users/UserForm.jsx';
 
+const token = localStorage.getItem('chatteruser')
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -84,7 +86,6 @@ class App extends Component {
 
   // gets the user based off of a locally saved token, if it exists, automatically logging them in
   getCurrentuser() {
-    const token = localStorage.getItem('chatteruser')
     $.ajax({
        url: '/api/',
        type: "GET",
@@ -103,6 +104,9 @@ class App extends Component {
     $.ajax({
        url: 'group/api/',
        type: "GET",
+       headers: {
+          "authorization": token
+       }
     }).done((groups) => {
       this.setState({ groups });
     }).fail((err) => {
@@ -123,6 +127,9 @@ class App extends Component {
     $.ajax({
        url: `group/api/getgroup/${activeGroup._id}`,
        type: "GET",
+       headers: {
+          "authorization": token
+       }
     }).done((group) => {
       this.setState({ activeGroup: group, messages: group.messages });
     }).fail((err) => {
@@ -152,6 +159,9 @@ class App extends Component {
     $.ajax({
        url: `group/api/newmessage/${activeGroup._id}`,
        type: "POST",
+       headers: {
+          "authorization": token
+       },
        data: {data: JSON.stringify(messageObject)},
     })
     .done((changedMessages) => {

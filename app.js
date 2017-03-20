@@ -120,20 +120,6 @@ function onListening() {
   debug('Listening on ' + bind);
 }
 
-// cross-origins allowances
-const permitCrossDomainRequests = function(req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
-  // some browsers send a pre-flight OPTIONS request to check if CORS is enabled so you have to also respond to that
-  if ('OPTIONS' === req.method) {
-    res.send(200);
-  }
-  else {
-    next();
-  }
-};
-
 // serves up the index.html entry point for all routes
 app.get('*', (req, res) => {
   var indexPath = path.join(__dirname, 'views/index.html');

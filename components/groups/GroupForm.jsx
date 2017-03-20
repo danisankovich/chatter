@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import $ from 'jquery';
+const token = localStorage.getItem('chatteruser')
 
 class GroupForm extends Component {
 
@@ -14,14 +15,20 @@ class GroupForm extends Component {
     }
 
     targetGroup.value = '';
-
-    $.post('group/api/newgroup', { name: groupName })
-      .done((response) => {
-        // if the post was successful, add group to state and update users
-        this.props.addGroup(response);
-      }).fail((error) => {
-        alert(error.responseText)
-      });
+    $.ajax({
+       url: 'group/api/newgroup',
+       type: "POST",
+       headers: {
+          "authorization": token
+       },
+       data: { name: groupName },
+    })
+    .done((response) => {
+      // if the post was successful, add group to state and update users
+      this.props.addGroup(response);
+    }).fail((error) => {
+      alert(error.responseText)
+    });
   }
   render() {
     const { group } = this.props

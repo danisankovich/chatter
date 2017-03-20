@@ -63,7 +63,12 @@ exports.signin = function(req, res, next) {
       const decoded = jwt.decode(token, config.secret);
 
       User.findById(decoded.sub, (err, user) => {
-        res.send({user, token});
+        const sentUser = {
+          _id: user._id,
+          email: user.email,
+          username: user.username,
+        }
+        res.send({user: sentUser, token});
       });
      }
      catch (e) {
@@ -82,8 +87,12 @@ exports.getUser = (req, res) => {
     try {
       const decoded = jwt.decode(token, config.secret);
       User.findById(decoded.sub, (err, user) => {
-        user = user
-        res.send(user)
+        const sentUser = {
+          _id: user._id,
+          email: user.email,
+          username: user.username,
+        }
+        res.send(sentUser)
       })
      }
      catch (e) {
