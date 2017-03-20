@@ -36,6 +36,7 @@ class App extends Component {
         on a new message, sends to all users in that chatroom
       */
       iosocket.on('message', (data) => {
+        console.log('yeah it hit')
         if (this.state.activeGroup && data.activeGroup._id === this.state.activeGroup._id) {
           this.state.messages.push(data.messageObject);
           this.setState({messages: this.state.messages})
@@ -46,7 +47,8 @@ class App extends Component {
         when a user is logged in, add them to the users list
       */
       iosocket.on('enter', (list) => {
-        const users = _.map(list, user => user);
+        console.log(list)
+        const users = _.map(list[this.state.activeGroup._id], user => user);
 
         if (this.state.currentUser) {
           const currentUserAdded = users.find((user) => {
@@ -161,6 +163,8 @@ class App extends Component {
        }
     }).done((group) => {
       this.setState({ activeGroup: group, messages: group.messages });
+      iosocket.emit('enter', {user: this.state.currentUser, group});
+
     }).fail((err) => {
       console.log('error', err)
     });
@@ -171,7 +175,7 @@ class App extends Component {
     const { users } = this.state;
     const currentUser = { id: user._id, username: user.username }
     users.push(currentUser)
-    iosocket.emit('enter', currentUser);
+    // iosocket.emit('enter', currentUser);
     this.setState({ currentUser, users: uniqBy(users, 'id') });
   }
 

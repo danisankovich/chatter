@@ -46,19 +46,25 @@ const userTracker = {};
 
 socketio.listen(server).on('connection', (socket) => {
   socket.on('message', (msg) => {
-    socket.broadcast.emit('message', msg);
+    // socket.broadcast.emit('message', msg);
+    socket.to(msg.activeGroup._id).emit('message', msg);
   });
 
   socket.on('newgroup', () => {
     socket.broadcast.emit('newgroup', {});
   });
 
-  socket.on('enter', (user) => {
-    if (user && !userTracker[user.id]) {
-      userTracker[user.id] = user;
+  socket.on('enter', (data) => {
+    userTracker[data.group._id] = userTracker[data.group._id] || [];
+    const found = userTracker[data.group._id].find((user) => {
+      return user._id == data.user.id;
+    });
+    if (!found) {
+      userTracker[data.group._id].push(data.user);
     }
-    socket.broadcast.emit('enter', userTracker);
+    socket.join(data.group._id);
     socket.emit('enter', userTracker);
+    socket.broadcast.emit('enter', userTracker);
   });
 
   socket.on('userleft', (user) => {
