@@ -5,6 +5,7 @@ var groupSchema = new Schema({
   name: { type: String, unique: true },
   messages: { type: Array },
   creatorId: {type: String},
+  stickied: {type: Boolean, default: false}
 });
 
 

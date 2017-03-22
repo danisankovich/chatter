@@ -6,6 +6,10 @@ exports.newGroup = function(req, res, next) {
   }
   Group.findOne({ name: req.body.name }, (err, group) => {
     if (err) return next(err);
+    console.log(req.user, req.body.stickied)
+    if (!req.user.isAdmin) {
+      req.body.stickied = false;
+    }
     if (group) {
       return res.status(422).send({error: 'Group Already Exists'});
     } else {
@@ -13,7 +17,7 @@ exports.newGroup = function(req, res, next) {
       data.creatorId = req.user._id;
       const newGroup = new Group(data);
       newGroup.save();
-      res.send({name: newGroup.name, id: newGroup._id, creatorId: newGroup.creatorId});
+      res.send({name: newGroup.name, id: newGroup._id, creatorId: newGroup.creatorId, stickied: newGroup.stickied});
     }
   });
 }

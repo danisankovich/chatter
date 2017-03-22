@@ -67,6 +67,7 @@ exports.signin = function(req, res, next) {
           _id: user._id,
           email: user.email,
           username: user.username,
+          isAdmin: user.isAdmin,
         }
         res.send({user: sentUser, token});
       });
@@ -91,6 +92,7 @@ exports.getUser = (req, res) => {
           _id: user._id,
           email: user.email,
           username: user.username,
+          isAdmin: user.isAdmin,
         }
         res.send(sentUser)
       })

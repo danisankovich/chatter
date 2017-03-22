@@ -6,6 +6,7 @@ const passport = require('passport');
 const requireAuth = passport.authenticate('jwt', {session: false});
 
 const Group = require('../controllers/group');
+
 router.get('/api/', requireAuth, Group.getGroups);
 router.get('/api/getgroup/:id', requireAuth, Group.getGroup);
 router.post('/api/newmessage/:id', requireAuth, Group.newMessage);

@@ -171,7 +171,7 @@ class App extends Component {
   //sets a username, updates the state
   setUserName(user) {
     const { users } = this.state;
-    const currentUser = { id: user._id, username: user.username }
+    const currentUser = { id: user._id, username: user.username, isAdmin: user.isAdmin }
     users.push(currentUser)
     this.setState({ currentUser, users: uniqBy(users, 'id') });
   }

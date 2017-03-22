@@ -23,13 +23,20 @@ class Group extends Component {
         <a onClick={this.makeActiveGroup.bind(this)}>
           {group.name}
         </a>
-        <span> | </span><a onClick={deleteGroup.bind(this, group._id, group.creatorId)}>
-          <span className="glyphicon glyphicon-remove"></span>
-        </a>
-        <span> | </span><a data-toggle="modal" href='#myModal' onClick={setEditGroup.bind(this, group)}>
-          <span className="glyphicon glyphicon-pencil"></span>
-        </a>
-
+        {(this.props.currentUser.isAdmin || this.props.currentUser.id == group.creatorId)
+          && <div style={{display: "inline"}}><span> | </span>
+            <a onClick={deleteGroup.bind(this, group._id, group.creatorId)}>
+              <span className="glyphicon glyphicon-remove"></span>
+            </a>
+          </div>
+        }
+        {(this.props.currentUser.isAdmin || this.props.currentUser.id == group.creatorId)
+          && <div style={{display: "inline"}}><span> | </span>
+            <a data-toggle="modal" href='#myModal' onClick={setEditGroup.bind(this, group)}>
+              <span className="glyphicon glyphicon-pencil"></span>
+            </a>
+          </div>
+        }
       </li>
     )
   }
