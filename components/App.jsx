@@ -26,7 +26,6 @@ class App extends Component {
   componentDidMount() {
     // initial ajax calls
     this.getCurrentuser();
-    this.getGroupList();
 
     //set up socket listeners
     iosocket.on('connect', () => {
@@ -94,6 +93,7 @@ class App extends Component {
        }
     }).done((user) => {
       this.setUserName(user);
+      this.getGroupList();
     }).fail((err) => {
       console.log('error', err)
     });
@@ -168,7 +168,7 @@ class App extends Component {
     });
   }
 
-  //sets a username, updates the state, and notifies other users
+  //sets a username, updates the state
   setUserName(user) {
     const { users } = this.state;
     const currentUser = { id: user._id, username: user.username }

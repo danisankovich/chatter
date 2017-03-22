@@ -8,8 +8,12 @@ class GroupForm extends Component {
 
     const targetGroup = this.refs.group;
     const groupName = targetGroup.value;
-    if (groupName.length > 15) {
+    if (groupName.trim().length > 15) {
       alert('Group Name Must Not Exceed 15 Characters.')
+      return;
+    }
+    if (groupName.trim().length < 3) {
+      alert('Group Name Must Be At Least 3 Characters Long.')
       return;
     }
     const token = localStorage.getItem('chatteruser')
